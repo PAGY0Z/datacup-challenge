@@ -6,6 +6,7 @@ const nameBot = "Aro";
 var user_id = -1;
 
 function ChatWeb() {
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [messages, setMessages] = useState([
     {
       _id: 1,
@@ -66,10 +67,11 @@ function ChatWeb() {
       const botMessage = {
         _id: messages.length + 2,
         text: data.user_id + " ----- " + data.response,
-        user_id: data.user_id,
         createdAt: new Date(),
         user: { _id: 2, name: { nameBot } },
       };
+
+      user_id = data.user_id;
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
@@ -111,6 +113,7 @@ function ChatWeb() {
     setMessages([...messages, newMessage]);
     setText("");
 
+    await delay(300);
 
     // Simulate bot typing
     setIsTyping(true);
