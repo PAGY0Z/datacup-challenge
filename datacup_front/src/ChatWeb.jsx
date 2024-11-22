@@ -65,7 +65,7 @@ function ChatWeb() {
       // Ajoutez la réponse du bot aux messages
       const botMessage = {
         _id: messages.length + 2,
-        text: data.response,
+        text: data.user_id + " ----- " + data.response,
         user_id: data.user_id,
         createdAt: new Date(),
         user: { _id: 2, name: { nameBot } },
@@ -111,8 +111,10 @@ function ChatWeb() {
     setMessages([...messages, newMessage]);
     setText("");
 
+
     // Simulate bot typing
     setIsTyping(true);
+
 
     await sendToApi(newMessage.text);
     //setTimeout(() => {
