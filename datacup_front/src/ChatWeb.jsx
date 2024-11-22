@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 const imageBot = "https://static.wixstatic.com/media/4dcb77_41fcd8b7c96248d6862c42502e4c2007~mv2.png";
 const nameBot = "Aro";
+const maxCharacterUser = 300;
 
 var user_id = -1;
 
@@ -242,18 +243,33 @@ function ChatWeb() {
         </div>
       )}
       <div className="p-4 bg-white flex items-center h-20">
-        <input
-          type="text"
-          className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
-            }`}
-          placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !isTyping) onSend();
-          }}
-          disabled={isTyping} // Désactive le champ si le bot répond
-        />
+      <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
+  <input
+    type="text"
+    className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${
+      isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
+    }`}
+    placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
+    value={text}
+    onChange={(e) => {
+      const inputValue = e.target.value;
+    
+      // Si la longueur du texte est supérieure à la limite, tronquer
+      if (inputValue.length > maxCharacterUser) {
+        setText(inputValue.substring(0, maxCharacterUser));
+      } else {
+        setText(inputValue);
+      }
+    }}
+    onKeyDown={(e) => {
+      if (e.key === "Enter" && !isTyping) onSend();
+    }}
+    disabled={isTyping} // Désactive le champ si le bot répond
+  />
+  <div className="text-xs text-gray-500 mt-1 self-end" style={{ fontSize: "9px" }}>
+    {text.length}/{maxCharacterUser}
+  </div>
+</div>
         <button
           className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${isTyping ? "opacity-50 cursor-not-allowed" : ""
             }`}
