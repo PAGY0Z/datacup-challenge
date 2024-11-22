@@ -99,10 +99,9 @@ function ChatWeb() {
 
       // ajouter le message reçu à la conversation
       setMessages((prev) => [...prev, botMessage]);
-    } 
+    }
     // erreur de l'API
-    catch (error) 
-    {
+    catch (error) {
       // Message d'erreur par le bot
       const errorMessage = {
         _id: messages.length + 2,
@@ -116,9 +115,8 @@ function ChatWeb() {
 
       // Remettre le dernier message utilisateur dans l'input
       setText(userMessage);
-    } 
-    finally 
-    {
+    }
+    finally {
       // descendre le scoll de la page
       setIsTypingWithScroll(false);
     }
@@ -243,33 +241,32 @@ function ChatWeb() {
         </div>
       )}
       <div className="p-4 bg-white flex items-center h-20">
-      <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
-  <input
-    type="text"
-    className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${
-      isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
-    }`}
-    placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
-    value={text}
-    onChange={(e) => {
-      const inputValue = e.target.value;
-    
-      // Si la longueur du texte est supérieure à la limite, tronquer
-      if (inputValue.length > maxCharacterUser) {
-        setText(inputValue.substring(0, maxCharacterUser));
-      } else {
-        setText(inputValue);
-      }
-    }}
-    onKeyDown={(e) => {
-      if (e.key === "Enter" && !isTyping) onSend();
-    }}
-    disabled={isTyping} // Désactive le champ si le bot répond
-  />
-  <div className="text-xs text-gray-500 mt-1 self-end" style={{ fontSize: "9px" }}>
-    {text.length}/{maxCharacterUser}
-  </div>
-</div>
+        <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
+          <input
+            type="text"
+            className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
+              }`}
+            placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
+            value={text}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+
+              // Si la longueur du texte est supérieure à la limite, tronquer
+              if (inputValue.length > maxCharacterUser) {
+                setText(inputValue.substring(0, maxCharacterUser));
+              } else {
+                setText(inputValue);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !isTyping) onSend();
+            }}
+            disabled={isTyping} // Désactive le champ si le bot répond
+          />
+          <div className="text-xs text-gray-500 mt-1 self-end" style={{ fontSize: "9px" }}>
+            {text.length}/{maxCharacterUser}
+          </div>
+        </div>
         <button
           className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${isTyping ? "opacity-50 cursor-not-allowed" : ""
             }`}
