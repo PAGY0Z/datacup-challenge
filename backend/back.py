@@ -30,8 +30,6 @@ def chat():
         user_id = data.get('user_id', '')
         user_message = data.get('response', '')
         
-        print("USER ID HERE BITCH" + str(int(user_id)))
-
         if user_id == -1: 
             user_id = next_user_id
             next_user_id += 1
@@ -55,7 +53,6 @@ def chat():
 
         user_sessions[user_id].append({"role": "assistant", "content": bot_response})
         
-        print("THE ID I GIVE IS " + str(int(user_id)))
         return jsonify({'user_id': user_id, 'response': bot_response})
 
     except PermissionDeniedError as e:
