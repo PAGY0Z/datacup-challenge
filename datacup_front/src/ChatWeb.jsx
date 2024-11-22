@@ -18,19 +18,15 @@ function ChatWeb() {
     scrollToBottom();
   }, [messages]);
 
-
-
-
-
   const sendToApi = async (userMessage) => {
     try {
       // Envoyer le message utilisateur à l'API
-      const response = await fetch("http://localhost:8080/api/chat", {
+      const response = await fetch("http://localhost:3001/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ response: userMessage }),
       });
   
       // Vérifiez si la réponse est OK
@@ -44,7 +40,7 @@ function ChatWeb() {
       // Ajoutez la réponse du bot aux messages
       const botMessage = {
         _id: messages.length + 2,
-        text: data.message, // Supposez que l'API retourne une clé "message"
+        text: data.response,
         createdAt: new Date(),
         user: { _id: 2, name: "Bot" },
       };
