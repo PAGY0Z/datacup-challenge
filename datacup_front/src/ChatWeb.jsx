@@ -10,7 +10,7 @@ function ChatWeb() {
   const setIsTypingWithScroll = (value) => {
     setIsTyping(value);
     if (value) {
-      scrollToBottom();
+      setTimeout(scrollToBottom, 50);
     }
   };
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -24,6 +24,7 @@ function ChatWeb() {
           Comment puis-je vous aider ?
         </>
       ),
+      //text: "Bonjour, je suis Aro votre assistant Kap Numérik ! Comment puis-je vous aider ?",
       createdAt: new Date(),
       user: { _id: 2, name: { nameBot } },
     }
@@ -71,10 +72,17 @@ function ChatWeb() {
       // Parsez la réponse JSON
       const data = await response.json();
 
+      // Formatter le texte pour afficher les espaces
+      const formattedText = data.response.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          <br />
+        </React.Fragment>
+      ));
       // Ajoutez la réponse du bot aux messages
       const botMessage = {
         _id: messages.length + 2,
-        text: data.response,
+        text: formattedText,
         createdAt: new Date(),
         user: { _id: 2, name: { nameBot } },
       };
@@ -121,7 +129,7 @@ function ChatWeb() {
     setMessages([...messages, newMessage]);
     setText("");
 
-    await delay(400);
+    await delay(500);
 
     // Simulate bot typing
     setIsTypingWithScroll(true);
@@ -183,7 +191,7 @@ function ChatWeb() {
               </div>
             )}
             <div
-              className={`py-3 px-5 rounded-full ${msg.user._id === 1
+              className={`py-3 px-5 rounded-xl ${msg.user._id === 1
                 ? "bg-light_blue text-white font-poppins"
                 : "bg-gray-200 text-black font-poppins"
                 }`}
@@ -213,21 +221,21 @@ function ChatWeb() {
         <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
-            onClick={() => handleSuggestionClick("Suis-je éligible ?")}
-          >
-            Suis-je éligible ?
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
             onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
           >
             Qu'est-ce que le Kap Numérik ?
           </button>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
-            onClick={() => handleSuggestionClick("Quels sont vos services ?")}
+            onClick={() => handleSuggestionClick("Suis-je éligible au dispositif ?")}
           >
-            Quels sont vos services ?
+            Suis-je éligible au dispositif ?
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            onClick={() => handleSuggestionClick("Quels sont les services disponible ?")}
+          >
+            Quels sont les services disponible ?
           </button>
         </div>
       )}
