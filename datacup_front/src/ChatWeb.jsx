@@ -104,6 +104,7 @@ function ChatWeb() {
       user: { _id: 1, name: "User" },
     };
 
+    setShowSuggestions(false)
     setMessages([...messages, newMessage]);
     setText("");
 
@@ -168,8 +169,8 @@ function ChatWeb() {
             )}
             <div
               className={`py-3 px-5 rounded-full ${msg.user._id === 1
-                  ? "bg-light_blue text-white font-poppins"
-                  : "bg-gray-200 text-black font-poppins"
+                ? "bg-light_blue text-white font-poppins"
+                : "bg-gray-200 text-black font-poppins"
                 }`}
             >
               {msg.text}
@@ -194,27 +195,27 @@ function ChatWeb() {
         <div ref={messagesEndRef} />
       </div>
       {showSuggestions && (
-  <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
-    <button
-      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
-      onClick={() => handleSuggestionClick("Suis-je éligible ?")}
-    >
-      Suis-je éligible ?
-    </button>
-    <button
-      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
-      onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
-    >
-      Qu'est-ce que le Kap Numérik ?
-    </button>
-    <button
-      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
-      onClick={() => handleSuggestionClick("Quels sont vos services ?")}
-    >
-      Quels sont vos services ?
-    </button>
-  </div>
-)}
+        <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            onClick={() => handleSuggestionClick("Suis-je éligible ?")}
+          >
+            Suis-je éligible ?
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
+          >
+            Qu'est-ce que le Kap Numérik ?
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            onClick={() => handleSuggestionClick("Quels sont vos services ?")}
+          >
+            Quels sont vos services ?
+          </button>
+        </div>
+      )}
       <div className="p-4 bg-white flex items-center h-20">
         <input
           type="text"
