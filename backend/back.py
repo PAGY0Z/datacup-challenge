@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from openai import OpenAI
-from openai import APIConnectionError, RateLimitError, APIError, PermissionDeniedError
+from openai import OpenAI, APIConnectionError, RateLimitError, APIError, PermissionDeniedError
 from dotenv import load_dotenv
 import os
 
@@ -19,26 +18,45 @@ except FileNotFoundError:
     print("Error: 'prompt.txt' file not found.")
     prompt_text = "You are a helpful assistant."
 
+user_sessions = {}
+next_user_id = 0
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
+    global next_user_id
+
     try:
         data = request.json
+        user_id = data.get('user_id', '')
         user_message = data.get('response', '')
+        
+        print("USER ID HERE BITCH" + str(int(user_id)))
 
+        if user_id == -1: 
+            user_id = next_user_id
+            next_user_id += 1
         if not user_message:
             return jsonify({'error': 'Message is empty'}), 400
 
+        if user_id not in user_sessions:
+            user_sessions[user_id] = [{"role": "system", "content": prompt_text}]
+
+        user_sessions[user_id].append({"role": "user", "content": user_message})
+
+        print(f"Conversation for user {user_id}: {user_sessions[user_id]}")
+
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo", 
-            messages=[
-                {"role": "system", "content": prompt_text},
-                {"role": "user", "content": user_message}
-            ],
+            model="gpt-3.5-turbo",
+            messages=user_sessions[user_id], 
             temperature=0.7
         )
 
         bot_response = response.choices[0].message.content
-        return jsonify({'response': bot_response})
+
+        user_sessions[user_id].append({"role": "assistant", "content": bot_response})
+        
+        print("THE ID I GIVE IS " + str(int(user_id)))
+        return jsonify({'user_id': user_id, 'response': bot_response})
 
     except PermissionDeniedError as e:
         print(f"Permission Denied Error: {e}")
