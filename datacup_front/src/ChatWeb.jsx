@@ -6,7 +6,15 @@ const nameBot = "Aro";
 var user_id = -1;
 
 function ChatWeb() {
+
+  const setIsTypingWithScroll = (value) => {
+    setIsTyping(value);
+    if (value) {
+      scrollToBottom();
+    }
+  };
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const [messages, setMessages] = useState([
     {
       _id: 1,
@@ -66,7 +74,7 @@ function ChatWeb() {
       // Ajoutez la réponse du bot aux messages
       const botMessage = {
         _id: messages.length + 2,
-        text: data.user_id + " ----- " + data.response,
+        text: data.response,
         createdAt: new Date(),
         user: { _id: 2, name: { nameBot } },
       };
@@ -90,7 +98,7 @@ function ChatWeb() {
       // Remettre le dernier message utilisateur dans l'input
       setText(userMessage);
     } finally {
-      setIsTyping(false);
+      setIsTypingWithScroll(false);
     }
   };
 
@@ -113,11 +121,10 @@ function ChatWeb() {
     setMessages([...messages, newMessage]);
     setText("");
 
-    await delay(300);
+    await delay(400);
 
     // Simulate bot typing
-    setIsTyping(true);
-
+    setIsTypingWithScroll(true);
 
     await sendToApi(newMessage.text);
     //setTimeout(() => {
@@ -128,7 +135,7 @@ function ChatWeb() {
     //    user: { _id: 2, name: "Bot" },
     //  };
     //  setMessages((prev) => [...prev, botMessage]);
-    //  setIsTyping(false);
+    //  setIsTypingWithScroll(false);
     //}, 2000); // Simule un délai de 2 secondes
   };
 
@@ -150,7 +157,7 @@ function ChatWeb() {
         user: { _id: 1, name: "User" },
       },
     ]); // Ajoute le message directement dans la conversation
-    setIsTyping(true); // Simule le bot en train de répondre
+    setIsTypingWithScroll(true); // Simule le bot en train de répondre
     sendToApi(suggestion); // Envoie la suggestion à l'API
   };
 
