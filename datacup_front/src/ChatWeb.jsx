@@ -14,11 +14,15 @@ function ChatWeb() {
         </>
       ),
       createdAt: new Date(),
-      user: { _id: 2, name:{nameBot} },
+      user: { _id: 2, name: { nameBot } },
     }
   ]);
-  //const [messages, setMessages] = useState([]);
+
   const [text, setText] = useState("");
+
+  const [showSuggestions, setShowSuggestions] = useState(true);
+
+
   const [isTyping, setIsTyping] = useState(false);
 
   // Référence pour le défilement
@@ -38,7 +42,7 @@ function ChatWeb() {
 
 
   const sendToApi = async (userMessage) => {
-      try {
+    try {
       // Envoyer le message utilisateur à l'API
       const response = await fetch("http://localhost:3001/api/chat", {
         method: "POST",
@@ -47,37 +51,37 @@ function ChatWeb() {
         },
         body: JSON.stringify({ response: userMessage }),
       });
-  
+
       // Vérifiez si la réponse est OK
       if (!response.ok) {
         throw new Error("Une erreur est survenue lors de l'appel API.");
       }
-  
+
       // Parsez la réponse JSON
       const data = await response.json();
-  
+
       // Ajoutez la réponse du bot aux messages
       const botMessage = {
         _id: messages.length + 2,
         text: data.response,
         createdAt: new Date(),
-        user: { _id: 2, name:{nameBot} },
+        user: { _id: 2, name: { nameBot } },
       };
-  
+
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error("Erreur lors de l'appel à l'API :", error);
-  
+
       // Message d'erreur par le bot
       const errorMessage = {
         _id: messages.length + 2,
         text: "Désolé, une erreur est survenue. Veuillez réessayer.",
         createdAt: new Date(),
-        user: { _id: 2, name:{nameBot} },
+        user: { _id: 2, name: { nameBot } },
       };
-  
+
       setMessages((prev) => [...prev, errorMessage]);
-  
+
       // Remettre le dernier message utilisateur dans l'input
       setText(userMessage);
     } finally {
@@ -85,7 +89,7 @@ function ChatWeb() {
     }
   };
 
-  
+
 
 
 
@@ -120,6 +124,30 @@ function ChatWeb() {
   };
 
 
+  //const handleSuggestionClick = (suggestion) => {
+  //  setText(suggestion); // Remplit l'input avec la suggestion
+  //  setShowSuggestions(false); // Masque les suggestions
+  //  onSend(); // Envoie le message
+  //};
+  const handleSuggestionClick = (suggestion) => {
+    //setText(suggestion); // Remplit l'input avec la suggestion
+    setShowSuggestions(false); // Masque les suggestions
+    setMessages((prev) => [
+      ...prev,
+      {
+        _id: prev.length + 1,
+        text: suggestion,
+        createdAt: new Date(),
+        user: { _id: 1, name: "User" },
+      },
+    ]); // Ajoute le message directement dans la conversation
+    setIsTyping(true); // Simule le bot en train de répondre
+    sendToApi(suggestion); // Envoie la suggestion à l'API
+  };
+
+
+
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <div className="flex-grow p-4 overflow-y-auto">
@@ -139,11 +167,10 @@ function ChatWeb() {
               </div>
             )}
             <div
-              className={`py-3 px-5 rounded-full ${
-                msg.user._id === 1
+              className={`py-3 px-5 rounded-full ${msg.user._id === 1
                   ? "bg-light_blue text-white font-poppins"
                   : "bg-gray-200 text-black font-poppins"
-              }`}
+                }`}
             >
               {msg.text}
             </div>
@@ -166,12 +193,33 @@ function ChatWeb() {
         )}
         <div ref={messagesEndRef} />
       </div>
+      {showSuggestions && (
+  <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
+    <button
+      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+      onClick={() => handleSuggestionClick("Suis-je éligible ?")}
+    >
+      Suis-je éligible ?
+    </button>
+    <button
+      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+      onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
+    >
+      Qu'est-ce que le Kap Numérik ?
+    </button>
+    <button
+      className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+      onClick={() => handleSuggestionClick("Quels sont vos services ?")}
+    >
+      Quels sont vos services ?
+    </button>
+  </div>
+)}
       <div className="p-4 bg-white flex items-center h-20">
         <input
           type="text"
-          className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${
-            isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
-          }`}
+          className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
+            }`}
           placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -181,9 +229,8 @@ function ChatWeb() {
           disabled={isTyping} // Désactive le champ si le bot répond
         />
         <button
-          className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${
-            isTyping ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${isTyping ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           onClick={onSend}
           disabled={isTyping} // Désactive le bouton si le bot répond
         >
