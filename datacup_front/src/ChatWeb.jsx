@@ -18,7 +18,64 @@ function ChatWeb() {
     scrollToBottom();
   }, [messages]);
 
-  const onSend = () => {
+
+
+
+
+  const sendToApi = async (userMessage) => {
+    try {
+      // Envoyer le message utilisateur à l'API
+      const response = await fetch("http://localhost:8080/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+  
+      // Vérifiez si la réponse est OK
+      if (!response.ok) {
+        throw new Error("Une erreur est survenue lors de l'appel API.");
+      }
+  
+      // Parsez la réponse JSON
+      const data = await response.json();
+  
+      // Ajoutez la réponse du bot aux messages
+      const botMessage = {
+        _id: messages.length + 2,
+        text: data.message, // Supposez que l'API retourne une clé "message"
+        createdAt: new Date(),
+        user: { _id: 2, name: "Bot" },
+      };
+  
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Erreur lors de l'appel à l'API :", error);
+  
+      // Message d'erreur par le bot
+      const errorMessage = {
+        _id: messages.length + 2,
+        text: "Désolé, une erreur est survenue. Veuillez réessayer.",
+        createdAt: new Date(),
+        user: { _id: 2, name: "Bot" },
+      };
+  
+      setMessages((prev) => [...prev, errorMessage]);
+  
+      // Remettre le dernier message utilisateur dans l'input
+      setText(userMessage);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  
+
+
+
+
+  const onSend = async () => {
     if (!text.trim()) return;
 
     const newMessage = {
@@ -33,16 +90,18 @@ function ChatWeb() {
 
     // Simulate bot typing
     setIsTyping(true);
-    setTimeout(() => {
-      const botMessage = {
-        _id: messages.length + 2,
-        text: "Bonjour, comment puis-je vous aider ?",
-        createdAt: new Date(),
-        user: { _id: 2, name: "Bot" },
-      };
-      setMessages((prev) => [...prev, botMessage]);
-      setIsTyping(false);
-    }, 2000); // Simule un délai de 2 secondes
+
+    await sendToApi(newMessage.text);
+    //setTimeout(() => {
+    //  const botMessage = {
+    //    _id: messages.length + 2,
+    //    text: "Bonjour, comment puis-je vous aider ?",
+    //    createdAt: new Date(),
+    //    user: { _id: 2, name: "Bot" },
+    //  };
+    //  setMessages((prev) => [...prev, botMessage]);
+    //  setIsTyping(false);
+    //}, 2000); // Simule un délai de 2 secondes
   };
 
   return (
