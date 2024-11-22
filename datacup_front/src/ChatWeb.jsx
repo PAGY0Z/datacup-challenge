@@ -7,14 +7,18 @@ var user_id = -1;
 
 function ChatWeb() {
 
+  // scroller la page vers le bas
   const setIsTypingWithScroll = (value) => {
     setIsTyping(value);
     if (value) {
       setTimeout(scrollToBottom, 50);
     }
   };
+
+  // prévoir un delay
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // message de base
   const [messages, setMessages] = useState([
     {
       _id: 1,
@@ -30,11 +34,13 @@ function ChatWeb() {
     }
   ]);
 
+  // texte de l'utilisateur
   const [text, setText] = useState("");
 
+  // afficher les suggestions
   const [showSuggestions, setShowSuggestions] = useState(true);
 
-
+  // afficher le bot qui réfléchi
   const [isTyping, setIsTyping] = useState(false);
 
   // Référence pour le défilement
@@ -52,7 +58,7 @@ function ChatWeb() {
   }, [messages]);
 
 
-
+  // Fonction pour envoyer le message à l'API
   const sendToApi = async (userMessage) => {
     try {
       // Envoyer le message utilisateur à l'API
@@ -87,12 +93,15 @@ function ChatWeb() {
         user: { _id: 2, name: { nameBot } },
       };
 
+      // redéfinir id de l'user selon celui reçu
       user_id = data.user_id;
 
+      // ajouter le message reçu à la conversation
       setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error("Erreur lors de l'appel à l'API :", error);
-
+    } 
+    // erreur de l'API
+    catch (error) 
+    {
       // Message d'erreur par le bot
       const errorMessage = {
         _id: messages.length + 2,
@@ -101,11 +110,15 @@ function ChatWeb() {
         user: { _id: 2, name: { nameBot } },
       };
 
+      // Ajouter le message d'erreur à la conversation
       setMessages((prev) => [...prev, errorMessage]);
 
       // Remettre le dernier message utilisateur dans l'input
       setText(userMessage);
-    } finally {
+    } 
+    finally 
+    {
+      // descendre le scoll de la page
       setIsTypingWithScroll(false);
     }
   };
@@ -114,10 +127,12 @@ function ChatWeb() {
 
 
 
-
+  // Fonction pour envoyer le message
   const onSend = async () => {
+    // si message vide ne rien faire
     if (!text.trim()) return;
 
+    // Crée le message de l'utilisateur
     const newMessage = {
       _id: messages.length + 1,
       text: text.trim(),
@@ -125,36 +140,23 @@ function ChatWeb() {
       user: { _id: 1, name: "User" },
     };
 
-    setShowSuggestions(false)
-    setMessages([...messages, newMessage]);
-    setText("");
+    setShowSuggestions(false); // Masque les suggestions
+    setMessages([...messages, newMessage]); // Ajoute le message à la conversation
+    setText(""); // remet l'input vide
 
+    // petit délai pour laisser le texte user s'afficher avant que le bot réfléchisse
     await delay(500);
 
-    // Simulate bot typing
+    // Affiche bot qui réfléchit
     setIsTypingWithScroll(true);
 
+    // envoye le message à l'API
     await sendToApi(newMessage.text);
-    //setTimeout(() => {
-    //  const botMessage = {
-    //    _id: messages.length + 2,
-    //    text: "Bonjour, comment puis-je vous aider ?",
-    //    createdAt: new Date(),
-    //    user: { _id: 2, name: "Bot" },
-    //  };
-    //  setMessages((prev) => [...prev, botMessage]);
-    //  setIsTypingWithScroll(false);
-    //}, 2000); // Simule un délai de 2 secondes
   };
 
 
-  //const handleSuggestionClick = (suggestion) => {
-  //  setText(suggestion); // Remplit l'input avec la suggestion
-  //  setShowSuggestions(false); // Masque les suggestions
-  //  onSend(); // Envoie le message
-  //};
+  // Fonction pour gérer le clic sur une suggestion
   const handleSuggestionClick = (suggestion) => {
-    //setText(suggestion); // Remplit l'input avec la suggestion
     setShowSuggestions(false); // Masque les suggestions
     setMessages((prev) => [
       ...prev,
