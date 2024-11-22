@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 const imageBot = "https://static.wixstatic.com/media/4dcb77_41fcd8b7c96248d6862c42502e4c2007~mv2.png";
 const nameBot = "Aro";
 
+var user_id = -1;
+
 function ChatWeb() {
   const [messages, setMessages] = useState([
     {
@@ -49,7 +51,7 @@ function ChatWeb() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ response: userMessage }),
+        body: JSON.stringify({ response: userMessage, user_id: user_id })
       });
 
       // Vérifiez si la réponse est OK
@@ -64,6 +66,7 @@ function ChatWeb() {
       const botMessage = {
         _id: messages.length + 2,
         text: data.response,
+        user_id: data.user_id,
         createdAt: new Date(),
         user: { _id: 2, name: { nameBot } },
       };
