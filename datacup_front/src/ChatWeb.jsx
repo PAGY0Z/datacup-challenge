@@ -1,12 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
 
+const imageBot = "https://static.wixstatic.com/media/4dcb77_41fcd8b7c96248d6862c42502e4c2007~mv2.png";
+const nameBot = "Aro";
+
 function ChatWeb() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      _id: 1,
+      text: (
+        <>
+          Bonjour, je suis {nameBot} votre assistant Kap Numérik ! <br />
+          Comment puis-je vous aider ?
+        </>
+      ),
+      createdAt: new Date(),
+      user: { _id: 2, name:{nameBot} },
+    }
+  ]);
+  //const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   // Référence pour le défilement
   const messagesEndRef = useRef(null);
+
 
   // Fonction pour faire défiler vers le bas
   const scrollToBottom = () => {
@@ -18,8 +35,10 @@ function ChatWeb() {
     scrollToBottom();
   }, [messages]);
 
+
+
   const sendToApi = async (userMessage) => {
-    try {
+      try {
       // Envoyer le message utilisateur à l'API
       const response = await fetch("http://localhost:3001/api/chat", {
         method: "POST",
@@ -42,7 +61,7 @@ function ChatWeb() {
         _id: messages.length + 2,
         text: data.response,
         createdAt: new Date(),
-        user: { _id: 2, name: "Bot" },
+        user: { _id: 2, name:{nameBot} },
       };
   
       setMessages((prev) => [...prev, botMessage]);
@@ -54,7 +73,7 @@ function ChatWeb() {
         _id: messages.length + 2,
         text: "Désolé, une erreur est survenue. Veuillez réessayer.",
         createdAt: new Date(),
-        user: { _id: 2, name: "Bot" },
+        user: { _id: 2, name:{nameBot} },
       };
   
       setMessages((prev) => [...prev, errorMessage]);
@@ -100,9 +119,10 @@ function ChatWeb() {
     //}, 2000); // Simule un délai de 2 secondes
   };
 
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <div className="flex-grow p-4 overflow-y-auto mt-10">
+      <div className="flex-grow p-4 overflow-y-auto">
         {/* Messages */}
         {messages.map((msg) => (
           <div
@@ -110,16 +130,16 @@ function ChatWeb() {
             className={`mb-4 flex ${msg.user._id === 1 ? "justify-end" : "justify-start"} animate-fade-in-up`}
           >
             {msg.user._id !== 1 && (
-              <div className="w-12 h-12 rounded-full bg-gray-300 mr-3 flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-transparent mr-3 flex-shrink-0">
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlWp5AAOirHUvCB9jnepbzXhvIzR_1EZ690Q&s"
+                  src={imageBot}
                   alt="Bot Avatar"
                   className="w-full h-full rounded-full object-cover"
                 />
               </div>
             )}
             <div
-              className={`p-3 rounded-lg ${
+              className={`py-3 px-5 rounded-full ${
                 msg.user._id === 1
                   ? "bg-light_blue text-white font-poppins"
                   : "bg-gray-200 text-black font-poppins"
@@ -132,9 +152,9 @@ function ChatWeb() {
         {/* Indicateur de chargement */}
         {isTyping && (
           <div className="mb-4 flex justify-start animate-fade-in-up">
-            <div className="w-12 h-12 rounded-full bg-gray-300 mr-3 flex-shrink-0">
+            <div className="w-12 h-12 rounded-full bg-transparent mr-3 flex-shrink-0">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlWp5AAOirHUvCB9jnepbzXhvIzR_1EZ690Q&s"
+                src={imageBot}
                 alt="Bot Avatar"
                 className="w-full h-full rounded-full object-cover"
               />
