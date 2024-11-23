@@ -192,7 +192,7 @@ function ChatWeb() {
               </div>
             )}
             <div
-              className={`py-3 px-5 rounded-xl ${msg.user._id === 1
+              className={`py-3 px-5 rounded-xl text-sm ${msg.user._id === 1
                 ? "bg-light_blue text-white font-poppins"
                 : "bg-gray-200 text-black font-poppins"
                 }`}
@@ -221,19 +221,19 @@ function ChatWeb() {
       {showSuggestions && (
         <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
             onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
           >
             Qu'est-ce que le Kap Numérik ?
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
             onClick={() => handleSuggestionClick("Suis-je éligible au dispositif ?")}
           >
             Suis-je éligible au dispositif ?
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-400 transition duration-300"
+            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
             onClick={() => handleSuggestionClick("Quels sont les services disponible ?")}
           >
             Quels sont les services disponible ?
@@ -244,7 +244,7 @@ function ChatWeb() {
         <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
           <input
             type="text"
-            className={`flex-grow border rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
+            className={`flex-grow border text-sm rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
               }`}
             placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
             value={text}
