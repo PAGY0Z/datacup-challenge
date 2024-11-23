@@ -174,7 +174,7 @@ function ChatWeb() {
 
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="h-full flex flex-col">
       <div className="flex-grow p-4 overflow-y-auto">
         {/* Messages */}
         {messages.map((msg) => (
@@ -240,7 +240,7 @@ function ChatWeb() {
           </button>
         </div>
       )}
-      <div className="p-4 bg-white flex items-center h-20">
+      <div className="flex p-4 bg-white items-center h-20">
         <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
           <input
             type="text"
