@@ -239,11 +239,12 @@ function ChatWeb() {
         </button>
         <button
           className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300 flex-shrink-0"
-          onClick={() => handleSuggestionClick("Quels sont les services disponible ?")}
+          onClick={() => handleSuggestionClick("Quels sont les services disponibles ?")}
         >
           Quels sont les services disponible ?
         </button>
       </div>
+  
   
       {/* Input */}
       <div className="flex p-4 bg-gray-100 items-center h-20 flex-shrink-0">
