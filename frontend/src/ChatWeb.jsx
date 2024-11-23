@@ -39,7 +39,7 @@ function ChatWeb() {
   const [text, setText] = useState("");
 
   // afficher les suggestions
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  //const [showSuggestions, setShowSuggestions] = useState(true);
 
   // afficher le bot qui réfléchi
   const [isTyping, setIsTyping] = useState(false);
@@ -139,7 +139,7 @@ function ChatWeb() {
       user: { _id: 1, name: "User" },
     };
 
-    setShowSuggestions(false); // Masque les suggestions
+    //setShowSuggestions(false); // Masque les suggestions
     setMessages([...messages, newMessage]); // Ajoute le message à la conversation
     setText(""); // remet l'input vide
 
@@ -156,7 +156,7 @@ function ChatWeb() {
 
   // Fonction pour gérer le clic sur une suggestion
   const handleSuggestionClick = (suggestion) => {
-    setShowSuggestions(false); // Masque les suggestions
+    //setShowSuggestions(false); // Masque les suggestions
     setMessages((prev) => [
       ...prev,
       {
@@ -175,8 +175,8 @@ function ChatWeb() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-grow p-4 overflow-y-auto">
-        {/* Messages */}
+      {/* Messages */}
+      <div className="flex-grow overflow-y-auto p-4" style={{ maxHeight: "calc(100% - 130px)" }}>
         {messages.map((msg) => (
           <div
             key={msg._id}
@@ -192,10 +192,11 @@ function ChatWeb() {
               </div>
             )}
             <div
-              className={`py-3 px-5 rounded-xl text-sm ${msg.user._id === 1
-                ? "bg-light_blue text-white font-poppins"
-                : "bg-gray-200 text-black font-poppins"
-                }`}
+              className={`py-3 px-5 rounded-xl text-sm ${
+                msg.user._id === 1
+                  ? "bg-light_blue text-white font-poppins"
+                  : "bg-gray-200 text-black font-poppins"
+              }`}
             >
               {msg.text}
             </div>
@@ -218,39 +219,45 @@ function ChatWeb() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {showSuggestions && (
-        <div className="mb-4 flex flex-col items-end space-y-2 mr-8">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
-            onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
-          >
-            Qu'est-ce que le Kap Numérik ?
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
-            onClick={() => handleSuggestionClick("Suis-je éligible au dispositif ?")}
-          >
-            Suis-je éligible au dispositif ?
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300"
-            onClick={() => handleSuggestionClick("Quels sont les services disponible ?")}
-          >
-            Quels sont les services disponible ?
-          </button>
-        </div>
-      )}
-      <div className="flex p-4 bg-white items-center h-20">
-        <div className="flex flex-col flex-grow bg-white h-20 py-2 align-center">
+  
+      {/* Suggestions */}
+      <div
+        className="flex items-center space-x-2 overflow-x-auto px-4 bg-white flex-shrink-0"
+        style={{ height: "50px", borderTop: "1px solid #e0e0e0" }}
+      >
+        <button
+          className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300 flex-shrink-0"
+          onClick={() => handleSuggestionClick("Qu'est-ce que le Kap Numérik ?")}
+        >
+          Qu'est-ce que le Kap Numérik ?
+        </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300 flex-shrink-0"
+          onClick={() => handleSuggestionClick("Suis-je éligible au dispositif ?")}
+        >
+          Suis-je éligible au dispositif ?
+        </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300 flex-shrink-0"
+          onClick={() => handleSuggestionClick("Quels sont les services disponible ?")}
+        >
+          Quels sont les services disponible ?
+        </button>
+      </div>
+  
+      {/* Input */}
+      <div className="flex p-4 bg-gray-100 items-center h-20 flex-shrink-0">
+        <div className="flex flex-col flex-grow bg-gray-100 h-20 py-2 align-center">
           <input
             type="text"
-            className={`flex-grow border text-sm rounded-lg px-4 py-2 font-poppins bg-white ${isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
-              }`}
+            className={`flex-grow border text-sm rounded-lg px-4 py-2 font-poppins bg-white ${
+              isTyping ? "cursor-not-allowed bg-gray-200 placeholder:text-center" : "placeholder:text-left"
+            }`}
             placeholder={isTyping ? "Je réfléchis, veuillez patientez ..." : "Écrivez votre demande ..."}
             value={text}
             onChange={(e) => {
               const inputValue = e.target.value;
-
+  
               // Si la longueur du texte est supérieure à la limite, tronquer
               if (inputValue.length > maxCharacterUser) {
                 setText(inputValue.substring(0, maxCharacterUser));
@@ -268,8 +275,9 @@ function ChatWeb() {
           </div>
         </div>
         <button
-          className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${isTyping ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+          className={`bg-dark_blue text-white p-3 rounded-full flex items-center justify-center hover:bg-[#3b94c4] transition duration-300 ml-2 ${
+            isTyping ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={onSend}
           disabled={isTyping} // Désactive le bouton si le bot répond
         >
