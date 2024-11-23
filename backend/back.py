@@ -3,6 +3,7 @@ from flask_cors import CORS
 from openai import OpenAI, APIConnectionError, RateLimitError, APIError, PermissionDeniedError
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
 
@@ -11,14 +12,13 @@ CORS(app)
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-try:
-    with open('prompt.txt', 'r') as file:
-        prompt_text = file.read()
-except FileNotFoundError:
-    print("Error: 'prompt.txt' file not found.")
-    prompt_text = "You are a helpful assistant."
+ASSISTANT_ID = os.getenv("ASSISTANT_ID")
 
-user_sessions = {}
+if not ASSISTANT_ID:
+    raise ValueError("ASSISTANT_ID not set in the environment variables.")
+
+user_threads = {}
+user_last_message = {}
 next_user_id = 0
 
 @app.route('/api/chat', methods=['POST'])
@@ -29,30 +29,57 @@ def chat():
         data = request.json
         user_id = data.get('user_id', '')
         user_message = data.get('response', '')
-        
-        if user_id == -1: 
+
+        if user_id == -1:
             user_id = next_user_id
             next_user_id += 1
+
         if not user_message:
             return jsonify({'error': 'Message is empty'}), 400
 
-        if user_id not in user_sessions:
-            user_sessions[user_id] = [{"role": "system", "content": prompt_text}]
+        if user_id not in user_threads:
+            thread = client.beta.threads.create()
+            user_threads[user_id] = thread.id
+            user_last_message[user_id] = None
 
-        user_sessions[user_id].append({"role": "user", "content": user_message})
+        thread_id = user_threads[user_id]
 
-        print(f"Conversation for user {user_id}: {user_sessions[user_id]}")
+        user_message_obj = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=user_message
+        )
+        user_last_message[user_id] = user_message_obj.id
 
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=user_sessions[user_id], 
-            temperature=0.7
+        run = client.beta.threads.runs.create(
+            thread_id=thread_id,
+            assistant_id=ASSISTANT_ID
         )
 
-        bot_response = response.choices[0].message.content
+        while True:
+            run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+            if run_status.status == "completed":
+                break
+            elif run_status.status == "failed":
+                print("Run failed:", run_status.last_error)
+                return jsonify({'error': 'Run failed. Try again later.'}), 500
+            time.sleep(2)
 
-        user_sessions[user_id].append({"role": "assistant", "content": bot_response})
-        
+        messages = client.beta.threads.messages.list(thread_id=thread_id)
+
+        bot_response = None
+        for message in messages.data:
+            if message.role == "assistant":
+                for content in message.content:
+                    if content.type == 'text':
+                        bot_response = content.text.value
+                        break
+            if bot_response:
+                break
+
+        if not bot_response:
+            return jsonify({'error': 'No response received from the assistant.'}), 500
+
         return jsonify({'user_id': user_id, 'response': bot_response})
 
     except PermissionDeniedError as e:
