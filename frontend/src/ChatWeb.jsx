@@ -243,9 +243,17 @@ function ChatWeb() {
         >
           Quels sont les services disponible ?
         </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 text-sm rounded-full hover:bg-blue-400 transition duration-300 flex-shrink-0"
+          onClick={() => handleSuggestionClick("Quelles sont les étapes pour bénéficier du Kap Numérik ?")}
+        >
+          Quelles sont les étapes ?
+        </button>
       </div>
+
+      
   
-  
+
       {/* Input */}
       <div className="flex p-4 bg-gray-100 items-center h-20 flex-shrink-0">
         <div className="flex flex-col flex-grow bg-gray-100 h-20 py-2 align-center">
@@ -259,7 +267,7 @@ function ChatWeb() {
             onChange={(e) => {
               const inputValue = e.target.value;
   
-              // Si la longueur du texte est supérieure à la limite, tronquer
+              // Si la longueur du texte est supérieure à la limite, tronquer (notament pour le copier/coller)
               if (inputValue.length > maxCharacterUser) {
                 setText(inputValue.substring(0, maxCharacterUser));
               } else {
