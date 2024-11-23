@@ -53,7 +53,7 @@ ufw --force enable
 
 # Install Certbot
 echo "Installing Certbot for SSL..."
-# apt install -y certbot python3-certbot-nginx
+apt install -y certbot python3-certbot-nginx
 
 # Print completion message
 echo "VPS initialization is complete!"
