@@ -35,29 +35,29 @@ echo "Checking container status..."
 docker-compose ps
 
 # Optional SSL setup
-# read -p "Do you want to configure SSL with Let's Encrypt? (y/n): " ssl_choice
-# if [[ "$ssl_choice" =~ ^[Yy]$ ]]; then
-#     echo "Stopping Nginx container..."
-#     docker stop nginx
+read -p "Do you want to configure SSL with Let's Encrypt? (y/n): " ssl_choice
+if [[ "$ssl_choice" =~ ^[Yy]$ ]]; then
+    echo "Stopping Nginx container..."
+    docker stop nginx
 
-#     read -p "Enter your domain name (e.g., yourdomain.com): " domain
-#     read -p "Enter your www domain name (e.g., www.yourdomain.com): " www_domain
+    read -p "Enter your domain name (e.g., aro-chatbot.re): " domain
+    read -p "Enter your www domain name (e.g., www.aro-chatbot.re): " www_domain
 
-#     echo "Requesting SSL certificates from Let's Encrypt..."
-#     certbot certonly --standalone -d "$domain" -d "$www_domain"
+    echo "Requesting SSL certificates from Let's Encrypt..."
+    certbot certonly --standalone -d "$domain" -d "$www_domain"
 
-#     if [ $? -eq 0 ]; then
-#         echo "SSL certificates successfully obtained."
+    if [ $? -eq 0 ]; then
+        echo "SSL certificates successfully obtained."
 
-#         echo "Starting Nginx container..."
-#         docker start nginx
+        echo "Starting Nginx container..."
+        docker start nginx
 
-#         echo "SSL setup complete! Your application is now available at https://$domain"
-#     else
-#         echo "Failed to obtain SSL certificates. Please check the error messages and try again."
-#     fi
-# else
-#     echo "Skipping SSL setup."
-# fi
+        echo "SSL setup complete! Your application is now available at https://$domain"
+    else
+        echo "Failed to obtain SSL certificates. Please check the error messages and try again."
+    fi
+else
+    echo "Skipping SSL setup."
+fi
 
-echo "Application setup is complete. Access your app at http://<your_vps_ip>"
+echo "Application setup is complete. Access your app at http://aro-chatbot.re"
